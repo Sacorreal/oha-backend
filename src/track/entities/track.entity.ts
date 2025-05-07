@@ -1,8 +1,11 @@
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -68,8 +71,9 @@ export class Track {
   @Column('boolean', { default: true })
   available: boolean;
 
-  //TODO: crear relacion
-  author: string;
+  @ManyToMany(() => User, (user) => user.tracks)
+  @JoinTable()
+  authors: User[];
 
   @Column('simple-json')
   awards: Record<string, string>;
