@@ -1,3 +1,4 @@
+import { InvitedUser } from 'src/invited-user/entities/invited-user.entity';
 import { Track } from 'src/track/entities/track.entity';
 import {
   Column,
@@ -6,6 +7,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,10 +16,6 @@ export enum RoleUser {
   ADMIN = 'admin',
   AUTHOR = 'author',
   INTERPRETER = 'interpreter',
-  SING_SONG = 'singer-songwriter',
-  PRODUCER = 'producer',
-  MUSICIAN = 'musician',
-  MANAGER = 'manager',
 }
 
 @Entity('users')
@@ -28,7 +26,7 @@ export class User {
   @Column('varchar', { length: 255 })
   name: string;
 
-  @Column('varchar')
+  @Column('varchar', { name: 'last_name' })
   lastName: string;
 
   @Column('varchar')
@@ -71,9 +69,14 @@ export class User {
   @Column('boolean', { default: false })
   verified: boolean;
 
-  @ManyToMany(() => Track, (track) => track.author)
+  @ManyToMany(() => Track, (track) => track.authors, { nullable: true })
   @JoinTable()
   tracks: Track[];
+
+  @OneToMany(() => InvitedUser, (invitedUser) => invitedUser.id, {
+    nullable: true,
+  })
+  invitedUsers: InvitedUser[];
 
   @CreateDateColumn({
     name: 'created_at',
