@@ -1,4 +1,4 @@
-import { InvitedUser } from 'src/invited-user/entities/invited-user.entity';
+import { Invitation } from 'src/invitation/entities/invitation.entity';
 import { Track } from 'src/track/entities/track.entity';
 import {
   Column,
@@ -16,6 +16,7 @@ export enum RoleUser {
   ADMIN = 'admin',
   AUTHOR = 'author',
   INTERPRETER = 'interpreter',
+  INVITED = 'invited',
 }
 
 @Entity('users')
@@ -32,19 +33,19 @@ export class User {
   @Column('varchar')
   email: string;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: false, select: false })
   password: string;
 
-  @Column('varchar', { name: 'country_code' })
+  @Column('varchar', { name: 'country_code', nullable: true })
   countryCode: string;
 
-  @Column('int')
+  @Column('int', { nullable: true })
   phone: number;
 
-  @Column('varchar', { name: 'type_citizen_id' })
+  @Column('varchar', { name: 'type_citizen_id', nullable: true })
   typeCitizenID: string;
 
-  @Column('int', { name: 'citizen_id' })
+  @Column('int', { name: 'citizen_id', nullable: true })
   citizenID: number;
 
   @Column({
@@ -57,7 +58,7 @@ export class User {
   @Column('varchar', { nullable: false })
   genre: string[];
 
-  @Column('simple-json', { name: 'social_networks' })
+  @Column('simple-json', { name: 'social_networks', nullable: true })
   socialNetworks: Record<string, string>;
 
   @Column('varchar', { name: 'image_url', nullable: true })
@@ -73,10 +74,10 @@ export class User {
   @JoinTable()
   tracks: Track[];
 
-  @OneToMany(() => InvitedUser, (invitedUser) => invitedUser.id, {
+  @OneToMany(() => Invitation, (invitation) => invitation.inviter, {
     nullable: true,
   })
-  invitedUsers: InvitedUser[];
+  invitationsSent: Invitation[];
 
   @CreateDateColumn({
     name: 'created_at',
