@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinTable,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -78,7 +77,6 @@ export class Track {
   available: boolean;
 
   @ManyToMany(() => User, (user) => user.tracks, { nullable: false })
-  @JoinTable()
   authors: User[];
 
   @Column('simple-json', { nullable: true })

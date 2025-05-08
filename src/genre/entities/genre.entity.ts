@@ -1,9 +1,12 @@
 import { Track } from 'src/track/entities/track.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -46,4 +49,8 @@ export class Genre {
     nullable: true,
   })
   tracks?: Track[];
+
+  @ManyToMany(() => User, (user) => user.genres, { nullable: true })
+  @JoinTable()
+  users: User[];
 }

@@ -1,3 +1,4 @@
+import { Genre } from 'src/genre/entities/genre.entity';
 import { Invitation } from 'src/invitation/entities/invitation.entity';
 import { Track } from 'src/track/entities/track.entity';
 import {
@@ -55,8 +56,8 @@ export class User {
   })
   role: RoleUser;
 
-  @Column('varchar', { nullable: false })
-  genre: string[];
+  @ManyToMany(() => Genre, (genre) => genre.users, { nullable: false })
+  genres: Genre[];
 
   @Column('simple-json', { name: 'social_networks', nullable: true })
   socialNetworks: Record<string, string>;

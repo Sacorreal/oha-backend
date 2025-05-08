@@ -1,13 +1,4 @@
-import {
-  IsArray,
-  IsBoolean,
-  IsEmail,
-  IsEnum,
-  IsInt,
-  IsObject,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsArray, IsEmail, IsEnum, IsString } from 'class-validator';
 import { RoleUser } from '../entities/user.entity';
 
 export class CreateUserDto {
@@ -23,42 +14,10 @@ export class CreateUserDto {
   @IsString()
   password: string;
 
-  @IsOptional()
-  @IsString()
-  countryCode?: string;
-
-  @IsOptional()
-  @IsInt()
-  phone?: number;
-
-  @IsOptional()
-  @IsString()
-  typeCitizenID?: string;
-
-  @IsOptional()
-  @IsInt()
-  citizenID?: number;
-
   @IsEnum(RoleUser)
   role: RoleUser;
 
   @IsArray()
   @IsString({ each: true })
   genre: string[];
-
-  @IsOptional()
-  @IsObject()
-  socialNetworks?: Record<string, string>;
-
-  @IsOptional()
-  @IsString()
-  imageUrl?: string;
-
-  @IsOptional()
-  @IsString()
-  bio?: string;
-
-  @IsOptional()
-  @IsBoolean()
-  verified?: boolean;
 }
