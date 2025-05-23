@@ -26,7 +26,7 @@ export class TrackService {
     }
     const newTrack = await this.trackRepository.save(createTrackDto);
     return {
-      message: `el track con el id ${newTrack.id} ha sido creado con exito`,
+      message: `el track ha sido creado con exito`,
       id: newTrack.id,
     };
   }
@@ -48,11 +48,49 @@ export class TrackService {
     });
   }
 
-  update(id: number, updateTrackDto: UpdateTrackDto) {
-    return `This action updates a #${id} track`;
+  async addFavorite(userId: string, trackId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['favoriteTracks'],
+    });
+    const track = await this.trackRepository.findOneBy({ id: trackId });
+
+    if (!user || !track)
+      throw new NotFoundException('Usuario o track no encontrado');
+
+    if (!user.favoriteTracks.find((t) => t.id === trackId)) {
+      user.favoriteTracks.push(track);
+      await this.userRepository.save(user);
+    }
+    return user.favoriteTracks;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} track`;
+  async removeFavorite(userId: string, trackId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['favoriteTracks'],
+    });
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+
+    user.favoriteTracks = user.favoriteTracks.filter((t) => t.id !== trackId);
+    await this.userRepository.save(user);
+    return user.favoriteTracks;
+  }
+
+  async getFavorites(userId: string): Promise<Track[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['favoriteTracks'],
+    });
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+    return user.favoriteTracks;
+  }
+
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    return this.trackRepository.update(id, updateTrackDto);
+  }
+
+  remove(id: string) {
+    return this.trackRepository.delete(id);
   }
 }

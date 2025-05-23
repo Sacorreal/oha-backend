@@ -62,6 +62,9 @@ export class User {
   @ManyToMany(() => Track, (track) => track.authors)
   tracks: Track[];
 
+  @ManyToMany(() => Track, (track) => track.favoritedBy)
+  favoriteTracks?: Track[];
+
   //invitaciones enviadas
 
   //colaboradores asociados

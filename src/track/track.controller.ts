@@ -23,6 +23,14 @@ export class TrackController {
     return this.trackService.create(createTrackDto);
   }
 
+  @Post('/favorites/:userId/:trackId')
+  addFavorite(
+    @Param('userId') userId: string,
+    @Param('trackId') trackId: string,
+  ) {
+    return this.trackService.addFavorite(userId, trackId);
+  }
+
   @Get()
   findAll() {
     return this.trackService.findAll();
@@ -35,11 +43,23 @@ export class TrackController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
-    return this.trackService.update(+id, updateTrackDto);
+    return this.trackService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.trackService.remove(+id);
+    return this.trackService.remove(id);
+  }
+
+  @Delete('/favorites/:trackId/:userId')
+  removeFavorite(
+    @Param('userId') userId: string,
+    @Param('trackId') trackId: string,
+  ) {
+    return this.trackService.removeFavorite(userId, trackId);
+  }
+  @Get('/favorites/:userId')
+  getFavorites(@Param('userId') userId: string) {
+    return this.trackService.getFavorites(userId);
   }
 }

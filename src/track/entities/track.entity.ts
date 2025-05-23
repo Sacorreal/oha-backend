@@ -75,6 +75,12 @@ export class Track {
   @JoinTable()
   authors: User[];
 
+  @ManyToMany(() => User, (user) => user.favoriteTracks)
+  @JoinTable({
+    name: 'user_favorite_tracks',
+  })
+  favoritedBy?: User[];
+
   /*@ManyToMany(() => Playlist, (playlist) => playlist.tracks, {
     nullable: false,
   })
