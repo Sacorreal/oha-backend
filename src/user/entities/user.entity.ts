@@ -1,3 +1,4 @@
+import { Playlist } from 'src/playlist/entities/playlist.entity';
 import { Track } from 'src/track/entities/track.entity';
 import {
   Column,
@@ -5,6 +6,7 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -69,7 +71,8 @@ export class User {
 
   //colaboradores asociados
 
-  //playlist creadas
+  @OneToMany(() => Playlist, (playlist) => playlist.owner)
+  playlists: Playlist[];
 
   @CreateDateColumn({
     name: 'created_at',

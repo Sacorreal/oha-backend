@@ -1,3 +1,4 @@
+import { Playlist } from 'src/playlist/entities/playlist.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -81,11 +82,8 @@ export class Track {
   })
   favoritedBy?: User[];
 
-  /*@ManyToMany(() => Playlist, (playlist) => playlist.tracks, {
-    nullable: false,
-  })
-  playList: Playlist[];
-  */
+  @ManyToMany(() => Playlist, (playlist) => playlist.tracks)
+  playlists: Playlist[];
 
   //TODO: crear entidad award, tipo de dato <Award,year>
   @Column('jsonb', { nullable: true })
