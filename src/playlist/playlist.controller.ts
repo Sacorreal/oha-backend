@@ -58,4 +58,12 @@ export class PlaylistController {
   ) {
     return this.playlistService.removeTrack(playlistId, trackId);
   }
+
+  @Post('/addcollab/:playlistId/:collaboratorId')
+  createInvitationPlaylist(
+    @Param('playlistId') playlistId: string,
+    @Param('collaboratorId') collaboratorId: string,
+  ) {
+    return this.playlistService.addCollabToPlaylist(playlistId, collaboratorId);
+  }
 }

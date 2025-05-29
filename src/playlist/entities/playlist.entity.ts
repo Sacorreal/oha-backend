@@ -1,3 +1,4 @@
+import { Collaborator } from 'src/collaborator/entities/collaborator.entity';
 import { Track } from 'src/track/entities/track.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
@@ -28,7 +29,11 @@ export class Playlist {
   })
   tracks: Track[];
 
-  //colaboradores[]
+  @ManyToMany(() => Collaborator)
+  @JoinTable({
+    name: 'playlist_collaborators',
+  })
+  collaborators: Collaborator[];
 
   @CreateDateColumn({
     name: 'created_at',

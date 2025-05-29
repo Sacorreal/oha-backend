@@ -1,3 +1,4 @@
+import { Collaborator } from 'src/collaborator/entities/collaborator.entity';
 import { Playlist } from 'src/playlist/entities/playlist.entity';
 import { Track } from 'src/track/entities/track.entity';
 import {
@@ -42,7 +43,6 @@ export class User {
   citizenID?: number;
 
   @Column({
-    name: 'role_user',
     type: 'enum',
     enum: UserRole,
     default: UserRole.USER,
@@ -67,9 +67,8 @@ export class User {
   @ManyToMany(() => Track, (track) => track.favoritedBy)
   favoriteTracks?: Track[];
 
-  //invitaciones enviadas
-
-  //colaboradores asociados
+  @OneToMany(() => Collaborator, (collaborator) => collaborator.invitedBy)
+  Collaborators: Collaborator[];
 
   @OneToMany(() => Playlist, (playlist) => playlist.owner)
   playlists: Playlist[];

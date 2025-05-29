@@ -7,9 +7,11 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { TrackAward } from './track-award.entity';
 import { TrackStatus } from './track-status.enum';
 
 @Entity('tracks')
@@ -85,9 +87,8 @@ export class Track {
   @ManyToMany(() => Playlist, (playlist) => playlist.tracks)
   playlists: Playlist[];
 
-  //TODO: crear entidad award, tipo de dato <Award,year>
-  @Column('jsonb', { nullable: true })
-  awards?: Record<string, string>;
+  @OneToMany(() => TrackAward, (trackAward) => trackAward.award)
+  awards?: TrackAward[];
 
   @Column('boolean', { default: false })
   isGospel: boolean;

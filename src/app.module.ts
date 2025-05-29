@@ -5,9 +5,11 @@ import { DatabaseModule } from './database/database.module';
 import { TrackModule } from './track/track.module';
 import { UserModule } from './user/user.module';
 import { PlaylistModule } from './playlist/playlist.module';
+import { CollaboratorModule } from './collaborator/collaborator.module';
+import { AwardModule } from './award/award.module';
 
 @Module({
-  imports: [UserModule, DatabaseModule, TrackModule, PlaylistModule],
+  imports: [UserModule, DatabaseModule, TrackModule, PlaylistModule, CollaboratorModule, AwardModule],
   controllers: [AppController],
   providers: [AppService],
 })

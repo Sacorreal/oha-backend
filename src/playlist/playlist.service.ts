@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Collaborator } from 'src/collaborator/entities/collaborator.entity';
 import { Track } from 'src/track/entities/track.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -14,6 +15,8 @@ export class PlaylistService {
     private playlistRepository: Repository<Playlist>,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Track) private trackRepository: Repository<Track>,
+    @InjectRepository(Collaborator)
+    private collaboratorRepository: Repository<Collaborator>,
   ) {}
 
   async create(createPlaylistDto: CreatePlaylistDto) {
@@ -67,5 +70,23 @@ export class PlaylistService {
 
   async deletePlaylist(playlistId: string) {
     await this.playlistRepository.delete(playlistId);
+  }
+
+  //TODO: crear colaboradores ilimitados.
+  async addCollabToPlaylist(playlistId: string, collaboratorId: string) {
+    const playlist = await this.playlistRepository.findOneBy({
+      id: playlistId,
+    });
+
+    const collaborator = await this.collaboratorRepository.findOneBy({
+      id: collaboratorId,
+    });
+    if (!playlist || !collaborator) throw new NotFoundException();
+    playlist.collaborators.push(collaborator);
+    return await this.playlistRepository.save(playlist);
+  }
+
+  async updateStatusPlaylist(invitationId: string, dto: any) {
+    /*return this.invitationRepository.update(invitationId, dto);*/
   }
 }
