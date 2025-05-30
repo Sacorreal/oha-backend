@@ -7,17 +7,27 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { RegionAward } from './region-award.enum';
 
 @Entity('awards')
 export class Award {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ nullable: false, unique: true })
   title: string;
 
-  @Column()
+  @Column({ nullable: false })
   category: string;
+
+  @Column({ nullable: false })
+  city: string;
+
+  @Column({
+    type: 'enum',
+    enum: RegionAward,
+  })
+  region: RegionAward;
 
   @OneToMany(() => TrackAward, (trackAward) => trackAward.track)
   tracks?: TrackAward[];

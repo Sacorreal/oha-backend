@@ -1,4 +1,11 @@
-import { ArrayNotEmpty, IsInt, IsString, Max, Min } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsInt,
+  IsString,
+  IsUUID,
+  Max,
+  Min,
+} from 'class-validator';
 import { User } from 'src/user/entities/user.entity';
 
 export class CreateTrackDto {
@@ -18,4 +25,10 @@ export class CreateTrackDto {
 
   @IsString()
   url: string;
+
+  @IsUUID()
+  genre: string;
+
+  @IsString()
+  subGenre: string;
 }

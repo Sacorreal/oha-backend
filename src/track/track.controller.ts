@@ -9,6 +9,7 @@ import {
   Post,
   UseInterceptors,
 } from '@nestjs/common';
+import { CreateTrackAwardDto } from './dto/create-track-award.dto';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackService } from './track.service';
@@ -61,5 +62,10 @@ export class TrackController {
   @Get('/favorites/:userId')
   getFavorites(@Param('userId') userId: string) {
     return this.trackService.getFavorites(userId);
+  }
+
+  @Post()
+  createTrackAward(@Body() data: CreateTrackAwardDto) {
+    return this.trackService.createTrackAward(data);
   }
 }

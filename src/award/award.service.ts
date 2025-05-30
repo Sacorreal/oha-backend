@@ -1,19 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateAwardDto } from './dto/create-award.dto';
 import { UpdateAwardDto } from './dto/update-award.dto';
+import { Award } from './entities/award.entity';
 
 @Injectable()
 export class AwardService {
+  constructor(
+    @InjectRepository(Award)
+    private readonly awardRepository: Repository<Award>,
+  ) {}
+
   create(createAwardDto: CreateAwardDto) {
-    return 'This action adds a new award';
+    return this.awardRepository.save(createAwardDto);
   }
 
-  findAll() {
-    return `This action returns all award`;
+  findAll(): Promise<Award[]> {
+    return this.awardRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} award`;
+  async findOne(id: string) {
+    const awardFound = await this.awardRepository.findOne({
+      where: { id },
+      relations: ['tracks.track'],
+    });
+    if (!awardFound) {
+      throw new NotFoundException('Premio no encontrado');
+    }
+    return awardFound;
   }
 
   update(id: number, updateAwardDto: UpdateAwardDto) {

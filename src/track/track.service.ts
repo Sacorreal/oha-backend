@@ -1,11 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
+import { Award } from 'src/award/entities/award.entity';
+import { GenreService } from 'src/genre/genre.service';
 import { User } from 'src/user/entities/user.entity';
 import { In, Repository } from 'typeorm';
+import { CreateTrackAwardDto } from './dto/create-track-award.dto';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { TrackResponseDto } from './dto/track-response.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { TrackAward } from './entities/track-award.entity';
 import { Track } from './entities/track.entity';
 
 @Injectable()
@@ -15,6 +19,11 @@ export class TrackService {
     private readonly trackRepository: Repository<Track>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Award)
+    private readonly awardRepository: Repository<Award>,
+    @InjectRepository(TrackAward)
+    private readonly trackAwardRepository: Repository<TrackAward>,
+    private readonly genreService: GenreService,
   ) {}
 
   async create(createTrackDto: CreateTrackDto) {
@@ -24,7 +33,20 @@ export class TrackService {
       });
       createTrackDto.authors = authors;
     }
-    const newTrack = await this.trackRepository.save(createTrackDto);
+
+    const { genre, subGenre } = await this.genreService.addGenreToTrack(
+      createTrackDto.genre,
+      createTrackDto.subGenre,
+    );
+
+    const newTrack = this.trackRepository.create({
+      ...CreateTrackDto,
+      genre,
+      subGenre,
+    });
+
+    await this.trackRepository.save(newTrack);
+
     return {
       message: `el track ha sido creado con exito`,
       id: newTrack.id,
@@ -87,10 +109,35 @@ export class TrackService {
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
-    return this.trackRepository.update(id, updateTrackDto);
+    const partialUpdate: any = { ...updateTrackDto };
+
+    if (updateTrackDto.genre) {
+      partialUpdate.genre = { id: updateTrackDto.genre };
+    }
+
+    await this.trackRepository.update(id, partialUpdate);
+
+    return this.trackRepository.findOne({ where: { id } });
   }
 
   remove(id: string) {
     return this.trackRepository.delete(id);
+  }
+
+  async createTrackAward(data: CreateTrackAwardDto) {
+    if (data.award) {
+      const awardFound = await this.awardRepository.findOneBy({
+        id: data.award.id,
+      });
+      data.award = awardFound;
+    }
+    if (data.track) {
+      const trackFound = await this.trackRepository.findOneBy({
+        id: data.track.id,
+      });
+      data.track = trackFound;
+    }
+    const newTrackAward = this.trackAwardRepository.create(data);
+    return this.trackAwardRepository.save(newTrackAward);
   }
 }

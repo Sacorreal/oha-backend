@@ -23,7 +23,10 @@ export class CollaboratorService {
     const invitedBy = await this.userRepository.findOneBy({
       id: dto.invitedBy,
     });
-    if (!invitedBy) throw new NotFoundException('Usuario no encontrado');
+    if (!invitedBy)
+      throw new NotFoundException(
+        'Usuario no encontrado, debes tener un invitado',
+      );
     const exists = await this.collaboratorRepository.findOneBy({
       email: dto.email,
     });

@@ -1,3 +1,4 @@
+import { Genre } from 'src/genre/entities/genre.entity';
 import { Playlist } from 'src/playlist/entities/playlist.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
@@ -7,6 +8,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -22,13 +24,12 @@ export class Track {
   @Column('varchar', { nullable: false })
   title: string;
 
-  /* @ManyToOne(() => Genre, (genre) => genre.tracks, {
+  @ManyToOne(() => Genre, (genre) => genre.tracks, {
     onDelete: 'CASCADE',
     eager: false,
     nullable: false,
   })
   genre: Genre;
-*/
 
   @Column('varchar', { name: 'sub_genre', nullable: true })
   subGenre?: string;

@@ -25,6 +25,16 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Get('authors/:id')
+  findOneAuthor(@Param('id') id: string) {
+    return this.userService.findOneAuthor(id);
+  }
+
+  @Get('/authors')
+  findAllAuthors() {
+    return this.userService.findAllAuthors();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
