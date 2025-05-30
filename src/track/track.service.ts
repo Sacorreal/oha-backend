@@ -27,12 +27,14 @@ export class TrackService {
   ) {}
 
   async create(createTrackDto: CreateTrackDto) {
-    if (createTrackDto.authors) {
-      const authors = await this.userRepository.findBy({
-        id: In(createTrackDto.authors),
-      });
-      createTrackDto.authors = authors;
+    const authors = await this.userRepository.findBy({
+      id: In(createTrackDto.authors),
+    });
+
+    if (authors.length === 0) {
+      throw new NotFoundException('Autor no encontrado');
     }
+    createTrackDto.authors = authors;
 
     const { genre, subGenre } = await this.genreService.addGenreToTrack(
       createTrackDto.genre,
@@ -40,7 +42,7 @@ export class TrackService {
     );
 
     const newTrack = this.trackRepository.create({
-      ...CreateTrackDto,
+      ...createTrackDto,
       genre,
       subGenre,
     });
@@ -109,19 +111,25 @@ export class TrackService {
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
+    const track = await this.trackRepository.findOneBy({ id });
+    if (!track) {
+      throw new NotFoundException('Track no encontrado');
+    }
     const partialUpdate: any = { ...updateTrackDto };
-
     if (updateTrackDto.genre) {
       partialUpdate.genre = { id: updateTrackDto.genre };
     }
-
     await this.trackRepository.update(id, partialUpdate);
-
     return this.trackRepository.findOne({ where: { id } });
   }
 
-  remove(id: string) {
-    return this.trackRepository.delete(id);
+  async remove(id: string) {
+    const track = await this.trackRepository.findOneBy({ id });
+    if (!track) {
+      throw new NotFoundException('Track no encontrado');
+    }
+    await this.trackRepository.delete(id);
+    return { message: 'Track eliminado con éxito' };
   }
 
   async createTrackAward(data: CreateTrackAwardDto) {

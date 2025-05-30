@@ -50,15 +50,30 @@ export class UserService {
     return authorFound;
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
+    const userFound = await this.userRepository.findOneBy({ id });
+
+    if (!userFound) {
+      throw new NotFoundException('Usuario no existe');
+    }
+    return userFound;
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('Usuario no existe');
+    }
+    await this.userRepository.update(id, updateUserDto);
     return this.userRepository.findOneBy({ id });
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(id, updateUserDto);
-  }
-
-  remove(id: string) {
-    return this.userRepository.delete(id);
+  async remove(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('Usuario no existe');
+    }
+    await this.userRepository.delete(id);
+    return { message: 'Usuario eliminado con éxito' };
   }
 }

@@ -46,6 +46,6 @@ export class CollaboratorController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.collaboratorService.remove(+id);
+    return this.collaboratorService.remove(id);
   }
 }

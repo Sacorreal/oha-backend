@@ -31,11 +31,21 @@ export class AwardService {
     return awardFound;
   }
 
-  update(id: number, updateAwardDto: UpdateAwardDto) {
-    return `This action updates a #${id} award`;
+  async update(id: string, updateAwardDto: UpdateAwardDto) {
+    const award = await this.awardRepository.findOneBy({ id });
+    if (!award) {
+      throw new NotFoundException('Premio no encontrado');
+    }
+    await this.awardRepository.update(id, updateAwardDto);
+    return this.awardRepository.findOneBy({ id });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} award`;
+  async remove(id: string) {
+    const award = await this.awardRepository.findOneBy({ id });
+    if (!award) {
+      throw new NotFoundException('Premio no encontrado');
+    }
+    await this.awardRepository.delete(id);
+    return { message: 'Premio eliminado con éxito' };
   }
 }

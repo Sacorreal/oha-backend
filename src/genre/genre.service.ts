@@ -28,25 +28,36 @@ export class GenreService {
       throw new BadRequestException(`El género "${genre}" ya existe`);
     }
 
-    // Normalizar, eliminar duplicados en subgéneros y crea un array
-    const normalizedSubgenres = [
-      ...new Set(subGenre.map((s) => s.trim().toLowerCase())),
-    ];
+    const defaultSubgenre = 'gospel';
+    const normalizedSubgenres = new Set<string>();
+
+    if (Array.isArray(subGenre)) {
+      for (const s of subGenre) {
+        normalizedSubgenres.add(s.trim().toLowerCase());
+      }
+    }
+
+    normalizedSubgenres.add(defaultSubgenre);
 
     const newGenre = this.genreRepository.create({
       genre: normalizedGenre,
-      subGenre: normalizedSubgenres,
+      subGenre: Array.from(normalizedSubgenres),
     });
 
     return this.genreRepository.save(newGenre);
   }
 
   findAll() {
-    return `This action returns all genre`;
+    return this.genreRepository.find({
+      select: ['id', 'genre', 'subGenre'],
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} genre`;
+  findOne(id: string) {
+    return this.genreRepository.findOne({
+      select: ['id', 'subGenre', 'tracks'],
+      relations: ['tracks'],
+    });
   }
 
   update(id: number, updateGenreDto: UpdateGenreDto) {

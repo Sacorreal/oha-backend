@@ -65,7 +65,10 @@ export class CollaboratorService {
     return this.collaboratorRepository.save(collab);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} collaborator`;
+  async remove(id: string) {
+    const collab = await this.collaboratorRepository.findOneBy({ id });
+    if (!collab) throw new NotFoundException('Colaborador no encontrado');
+    await this.collaboratorRepository.delete(id);
+    return { message: 'Colaborador eliminado con éxito' };
   }
 }

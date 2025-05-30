@@ -32,11 +32,11 @@ export class AwardController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAwardDto: UpdateAwardDto) {
-    return this.awardService.update(+id, updateAwardDto);
+    return this.awardService.update(id, updateAwardDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.awardService.remove(+id);
+    return this.awardService.remove(id);
   }
 }

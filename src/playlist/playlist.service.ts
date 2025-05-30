@@ -60,16 +60,28 @@ export class PlaylistService {
   findOne(playlistId: string) {
     return this.playlistRepository.findOne({
       where: { id: playlistId },
-      relations: ['tracks'],
+      relations: ['tracks', 'owner', 'collaborators'],
     });
   }
 
-  update(id: string, updatePlaylistDto: UpdatePlaylistDto) {
-    return this.playlistRepository.update(id, updatePlaylistDto);
+  async update(id: string, updatePlaylistDto: UpdatePlaylistDto) {
+    const playlist = await this.playlistRepository.findOneBy({ id });
+    if (!playlist) {
+      throw new NotFoundException('Playlist no encontrada');
+    }
+    await this.playlistRepository.update(id, updatePlaylistDto);
+    return this.playlistRepository.findOneBy({ id });
   }
 
   async deletePlaylist(playlistId: string) {
+    const playlist = await this.playlistRepository.findOneBy({
+      id: playlistId,
+    });
+    if (!playlist) {
+      throw new NotFoundException('Playlist no encontrada');
+    }
     await this.playlistRepository.delete(playlistId);
+    return { message: 'Playlist eliminada con éxito' };
   }
 
   //TODO: crear colaboradores ilimitados.

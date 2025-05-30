@@ -64,7 +64,7 @@ export class TrackController {
     return this.trackService.getFavorites(userId);
   }
 
-  @Post()
+  @Post('/award')
   createTrackAward(@Body() data: CreateTrackAwardDto) {
     return this.trackService.createTrackAward(data);
   }
